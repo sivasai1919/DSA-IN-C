@@ -1,0 +1,66 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct jobs {
+    char id;
+    int profit;
+    int deadline;
+};
+
+void Jobsequence(struct jobs jobs[], int n) {
+    for (int i = 0; i < n; i++) {
+        for (int j = i + 1; j < n; j++) {
+            if (jobs[i].profit < jobs[j].profit) {
+                struct jobs temp = jobs[i];
+                jobs[i] = jobs[j];
+                jobs[j] = temp;
+            }
+        }
+    }
+
+    int maxdead = 0;
+    for (int i = 0; i < n; i++) {
+        if (jobs[i].deadline > maxdead) {
+            maxdead = jobs[i].deadline;
+        }
+    }
+
+    int slot[maxdead];
+    for (int i = 0; i < maxdead; i++) {
+        slot[i] = -1;
+    }
+
+    int total_profit = 0;
+    printf("\nSelected Jobs: ");
+    for (int i = 0; i < n; i++) {
+        for (int j = jobs[i].deadline - 1; j >= 0; j--) {
+            if (slot[j] == -1) {
+                slot[j] = i;
+                total_profit += jobs[i].profit;
+                printf("%c ", jobs[i].id);
+                break;
+            }
+        }
+    }
+
+    printf("\nTotal Profit: %d\n", total_profit);
+}
+
+int main() {
+    int n;
+    printf("Enter the number of jobs: ");
+    scanf("%d", &n);
+
+    struct jobs jobs[n];
+    for (int i = 0; i < n; i++) {
+        printf("\nEnter the job ID: ");
+        scanf(" %c", &jobs[i].id);
+        printf("Enter the profit: ");
+        scanf("%d", &jobs[i].profit);
+        printf("Enter the deadline for the job: ");
+        scanf("%d", &jobs[i].deadline);
+    }
+
+    Jobsequence(jobs, n);
+    return 0;
+}
